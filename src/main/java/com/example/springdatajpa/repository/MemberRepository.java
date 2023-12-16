@@ -29,4 +29,8 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
     @Query("select new com.example.springdatajpa.domain.MemberDTO(m.id, m.userName, t.name)" +
             "from MemberEntity m join m.team t")
     List<MemberDTO> findMemberDTO();
+
+    @Query("select m from MemberEntity m where m.userName in :names")
+    List<MemberEntity> findByUserNames(@Param("names") List<String> names);
+
 }
