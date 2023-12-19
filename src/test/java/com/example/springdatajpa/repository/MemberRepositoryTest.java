@@ -121,6 +121,12 @@ class MemberRepositoryTest {
         assertThat(resultCount).isEqualTo(3);
     }
 
+    @Test
+    void queryHint() {
+        memberRepository.save(MemberEntity.builder().userName("member1").age(10).build());
+
+    }
+
 
 
 }
