@@ -7,6 +7,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -67,6 +70,55 @@ class MemberRepositoryTest {
     @Test
     void findHelloBy() {
         List<MemberEntity> helloBy = memberRepository.findTop3HelloBy();
+    }
+
+    @Test
+    void paging() {
+        // given
+        memberRepository.save(MemberEntity.builder().userName("member1").age(10).build());
+        memberRepository.save(MemberEntity.builder().userName("member2").age(10).build());
+        memberRepository.save(MemberEntity.builder().userName("member3").age(10).build());
+        memberRepository.save(MemberEntity.builder().userName("member4").age(10).build());
+        memberRepository.save(MemberEntity.builder().userName("member5").age(10).build());
+
+        int age = 10;
+        PageRequest pa = PageRequest.of(0, 3, Sort.Direction.DESC, "username");
+
+        // when
+        Page<MemberEntity> page = memberRepository.findByAge(age, pa);
+
+        // then
+        List<MemberEntity> content = page.getContent();
+        long totalElements = page.getTotalElements();
+
+        for (MemberEntity member : content) {
+            System.out.println("member = " + member);
+        }
+
+        assertThat(content.size()).isEqualTo(3);
+        assertThat(page.getTotalElements()).isEqualTo(5);
+        assertThat(page.getNumber()).isEqualTo(0);
+        assertThat(page.getTotalPages()).isEqualTo(2);
+        assertThat(page.isFirst()).isTrue();
+        assertThat(page.hasNext()).isTrue();
+    }
+
+    @Test
+    void bulkUpdate() {
+        // given
+        memberRepository.save(MemberEntity.builder().userName("member1").age(10).build());
+        memberRepository.save(MemberEntity.builder().userName("member2").age(19).build());
+        memberRepository.save(MemberEntity.builder().userName("member3").age(20).build());
+        memberRepository.save(MemberEntity.builder().userName("member4").age(21).build());
+        memberRepository.save(MemberEntity.builder().userName("member5").age(30).build());
+
+        // when
+        int resultCount = memberRepository.bulkAgePlus(20);
+        List<MemberEntity> result = memberRepository.findByUserName("member4");
+        MemberEntity member = result.get(0);
+
+        // then
+        assertThat(resultCount).isEqualTo(3);
     }
 
 

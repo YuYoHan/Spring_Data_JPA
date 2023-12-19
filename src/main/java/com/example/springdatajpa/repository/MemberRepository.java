@@ -2,10 +2,15 @@ package com.example.springdatajpa.repository;
 
 import com.example.springdatajpa.domain.MemberDTO;
 import com.example.springdatajpa.entity.MemberEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -32,5 +37,25 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
 
     @Query("select m from MemberEntity m where m.userName in :names")
     List<MemberEntity> findByUserNames(@Param("names") List<String> names);
+
+    Page<MemberEntity> findByAge(int age, Pageable pageable);
+
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Transactional
+    @Query("update MemberEntity m set m.age = m.age + 1 where m.age >= :age")
+    int bulkAgePlus(@Param("age") int age);
+
+
+    // findAll할 때 멤버도 조회하면서 팀까지 조회하고 싶을 때
+    // 기본 적으로 findAll 을 제공하기 때문에 Override 하여 재정의 후 사용
+    @Override
+    // DataJpa 에서 fetch 조인을 하기 위한 설정
+    @EntityGraph(attributePaths = {"team"})
+    List<MemberEntity> findAll();
+
+    // JPQL과 같이 사용하는 방법
+    @EntityGraph(attributePaths = {"team"})
+    @Query("select m from MemberEntity m")
+    List<MemberEntity> findMemberEntityGraph();
 
 }

@@ -64,4 +64,5 @@ class MemberJpaRepositoryTest {
         memberJpaRepository.delete(member2);
     }
 
+
 }
