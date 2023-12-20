@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Repository
-public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
+public interface MemberRepository extends JpaRepository<MemberEntity, Long>, MemberRepositoryCustom {
     List<MemberEntity> findTop3HelloBy();
 
     @Query(name = "Member.findByUserName")

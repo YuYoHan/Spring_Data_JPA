@@ -122,8 +122,8 @@ class MemberRepositoryTest {
     }
 
     @Test
-    void queryHint() {
-        memberRepository.save(MemberEntity.builder().userName("member1").age(10).build());
+    void callCustom() {
+        List<MemberEntity> result = memberRepository.findMemberCustom();
 
     }
 
