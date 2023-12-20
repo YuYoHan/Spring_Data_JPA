@@ -7,7 +7,7 @@ import lombok.*;
 @Getter
 @NoArgsConstructor
 @ToString(of = {"id", "userName", "age"})
-public class MemberEntity {
+public class MemberEntity extends BaseEntity{
     @Id @GeneratedValue
     @Column(name = "member_id")
     private Long id;

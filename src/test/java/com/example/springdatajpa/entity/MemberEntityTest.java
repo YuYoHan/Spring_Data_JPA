@@ -1,8 +1,10 @@
 package com.example.springdatajpa.entity;
 
+import com.example.springdatajpa.repository.MemberRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
@@ -13,6 +15,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class MemberEntityTest {
     @PersistenceContext
     EntityManager em;
+    @Autowired
+    MemberRepository memberRepository;
 
     @Test
     void testEntity() {
@@ -69,5 +73,17 @@ class MemberEntityTest {
             System.out.println("member = " + member);
             System.out.println("-> member.team = " + member.getTeam());
         }
+    }
+
+    @Test
+    void JpaEventVaseEntity() throws Exception {
+        // given
+        MemberEntity member = MemberEntity.builder()
+                .userName("member1")
+                .age(10)
+                .build();
+        memberRepository.save(member);
+
+        Thread.sleep(100);
     }
 }
