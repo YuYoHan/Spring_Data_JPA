@@ -29,6 +29,7 @@ public class MemberEntity extends BaseEntity{
         }
     }
 
+
     public void changeTeam(TeamEntity team) {
         this.team = team;
         team.getMemberEntityList().add(this);
